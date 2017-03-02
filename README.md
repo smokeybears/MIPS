@@ -1,4 +1,4 @@
-This files were created while doing the first few challanges on the Exercism
+These files were created while doing the first few challanges on the Exercism MIPS track. Instructions to run these files in the Mars MIPS emulator can be found [here](http://exercism.io/languages/mips/about)
 
 binary.mips - convert a binary string to decimal equivalent
 

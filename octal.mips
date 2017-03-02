@@ -1,0 +1,16 @@
+.text
+octal_convert:
+addu $t1, $zero, $s1 # store input address
+addu $v0, $zero, $zero
+convert:
+lb $t2, 0($t1)
+beq $t2, $zero, end
+addi $t1, $t1, 1 
+subi $t2, $t2, 0x30
+sll $v0, $v0, 3
+addu $v0, $v0, $t2
+j convert
+
+end:
+jr $ra
+

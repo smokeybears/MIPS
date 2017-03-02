@@ -1,0 +1,16 @@
+.text
+
+binary_convert:
+addu $v0, $zero, $zero
+addu $t2, $zero, $s1
+loop:
+lb $t3, 0($t2) # load first byte of input
+beq $t3, $zero, end # if reached null character end
+addi $t2, $t2, 1 # increment input string pointer for next interation
+subi $t3, $t3, 0x30 # subtract the ascii digit for '0'(0x30) or '1'(0x31) from 0x30 so we can just add $t1 after shifting
+sll $v0, $v0, 1 
+addu $v0, $v0, $t3
+j loop
+
+end:
+jr  $ra

@@ -1,0 +1,88 @@
+.data
+test_data: .word 15
+three: .asciiz "Pling"
+five: .asciiz "Plang"
+seven: .asciiz "Plong"
+#out_data: .asciiz "....."
+.text
+# is factor a0 = input num, a1 = factor also set t0 to factor string to test => sets t0 to true(1)/false(0)
+# if t0 is 1
+# append factor string(t0) to corolation to string
+
+
+
+raindrops:
+addu $t0, $zero, $ra # t1 = storage for return pointer
+#lw $a0, test_data
+#la $a1, out_data
+addu $t6, $zero, $a1 #loading the starting address twice so at the end we can check if the address changed if not then copy input num
+addu $t1, $zero, $a1
+addiu $a1, $zero, 3 # set second argument for is factor to test current factor
+la $a3, three_factor
+jal is_factor
+addiu $a1, $zero, 5
+la $a3, five_factor
+jal is_factor
+addiu $a1, $zero, 7
+la $a3, seven_factor
+jal is_factor
+j end
+
+
+is_factor:
+div $a0, $a1 # given number / current factor
+mfhi $t2 # move remainder if any
+seq $t3, $t2, $zero # set t3 to 1 if there is a remainder
+beq  $t3, $zero, not_equal # if no remainder jump to detemine which word to add
+jr $a3
+not_equal:
+jr $ra
+
+ 
+three_factor:
+la $t5, three
+j add_word
+
+five_factor:
+la $t5, five
+j add_word
+
+seven_factor:
+la $t5, seven
+j add_word
+
+add_word:
+lb $t4, 0($t5)
+sb  $t4, 0($t1) 
+beq $t4, $zero, jump_to_register
+addiu $t1, $t1, 1
+addiu $t5, $t5, 1 
+j add_word
+
+
+jump_to_register:
+jr $ra
+
+copy_input:
+# create stack with proper digits
+addu $fp, $zero, $sp
+div $a0, $a0, 10
+mfhi $t7
+addiu $t7, $t7, 0x30 # make digit into ascii equvilent
+addi $sp, $sp, -1
+sb $t7, 0($sp)
+mflo $a0
+bgt $a0, $zero, copy_input
+# unroll stack
+unroll_stack:
+lb $t7, 0($sp)
+sb $t7, 0($t1)
+addi $sp, $sp, 1
+addiu $t1, $t1, 1
+ble $sp,$fp , unroll_stack
+
+end:
+addu $a1, $zero, $t6
+beq $t1, $t6, copy_input # if the address didnt change means there were no factors so copy the input
+addu $ra, $zero, $t0
+jr $t0
